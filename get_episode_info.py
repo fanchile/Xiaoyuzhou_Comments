@@ -20,15 +20,8 @@ from modelscope.utils.constant import Tasks
 # sentiment classification
 semantic_cls = pipeline(Tasks.text_classification, 'damo/nlp_structbert_sentiment-classification_chinese-base')
 
-
 def get_podcast_info(PID):
     # pid is the identifier of podcast host
-    ############修改代码中这个pid即可################
-    # PID='63995a333a2b7eba5ceb4658' 
-    ###################################
-
-    # import support libraries
-    
 
     # get raw data
     url = "https://www.xiaoyuzhoufm.com/podcast/{}".format(PID)
@@ -39,7 +32,7 @@ def get_podcast_info(PID):
     }
     # 需要更换自己的cookie
     cookies = {
-        'cookie':'_jid=cb35d84b55564b05afdbd38a9b633fe9; _jt={"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiRkpnY2tlbzA0ekxXVGlSQ2x3QWJEK05kSVlJSmRBR2s1WFhcL2VhNml2SzV1WDlQR3hYSHJBQ2tKdE1zWHlxd2Z1S3hxWkozbGVlU2RRMHZzUnFmTzJYVHczajNSbGNEUzQyeUJHc0ZnQ0s4dlNoSXhmVkczMFFMUmtaaXpxdkZUYnIyNVB6aHhtcWJORklleUxpQlArOTZMSElsVHpqM3NNazBnV2F3UHdMTVA3a3R4N3lNTk1hY21KNjF3YmR1YWN1eWc1QVRCQ2Nja0MwSGRtVzQ0MExKUVwvZmFxYWxxUW14QWpWMVllTEVcL2NUb2d2MkFrUFRUSE9ablpTN2tYNWdEZTYrZlVDSWsrQW1sd3NqRldDdzFtTW1aVWJvazdYRFRSWm9TTmJ5WnpGOWhJWEFmVTZYWG9BdzdxVWg1ZWgyQkdFXC80ZFl5c3F1VW94WURFcXk3MVZPVHBqNXRNUHZvWmNXTjFOU1NkYz0iLCJ2IjozLCJpdiI6Ikl2Y1pGSXdrU0Q1c3ZDalA0ekhEOHc9PSIsImlhdCI6MTczMjE5Mzk3Ny42NzV9.AIcdDcPaSczVIW8I65E00mUqlI8hMo_MzZ2a9XpwsjA","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicVNnaUhKbUI3Unh2NEdNRSs2dzJYUE1VZktRSmlnQXlaN01RTDZQTFdxSmV2TzFVMGlOMENaQmE0blVYUXQ5YXY5bFNmeW5wbmVzRlwvUmFZZXhtSVwvMU00OWxYRlM4YlNZNkRvWFVBb3ZSREtMWmhHcDRQa2dCR0hERWlSaXBRWjZwUDAzaU5aRjdoXC9ZTjFIaWpSTzIzRnE4MFpReXBDQjN5STMwSXBtU1ZBdUYzd0w1UXlkRmVZNFwvZVRnTGQxcyIsInYiOjMsIml2IjoiZjRObkdzbXlGSXhMMzVjQmhTc0VOQT09IiwiaWF0IjoxNzMyMTkzOTc3LjY3NX0.47gH5zAadogx2FXk3YW2ntYLAMvnyfdPbghi3-ZKr_8"}'
+
     }
 
     req = requests.get(url,cookies=cookies, headers=headers, timeout=30)
@@ -92,17 +85,12 @@ def get_podcast_info(PID):
     if not eid_list:
         return 0
         
-    #podcast_name = {'title'}
-    field_names = {'pid','title', 'clapCount', 'commentCount', 'playCount', 'favoriteCount', 'pubDate', 'duration','eid'}
     eid_names = {'id','level','likeCount','isFriendly','replyCount'}
-    pod_info_data = [] # store basic info of every episode of podcast
     epi_info_data = [] # store basic info of every comments of episode 
     for val in eid_list:
         # get url of episode
         print(val)
         each_episode_url = "https://www.xiaoyuzhoufm.com/_next/data/quPA7j3prDFxOv8729MWU/episode/{}.json".format(val)
-        # each_episode_url = "https://www.xiaoyuzhoufm.com/_next/data/quPA7j3prDFxOv8729MWU/podcast/{}.json".format(val)
-
 
         fh = requests.get(each_episode_url,cookies=cookies, headers=headers)
         print(fh)
@@ -118,11 +106,6 @@ def get_podcast_info(PID):
         # get episode name
         episode_name = json_data['pageProps']['episode']['title']
 
-        # 打开文件，如果文件不存在则创建
-        # with open('output.txt', 'w', encoding='utf-8') as file:
-        #     # 写入内容
-        #     print(formatted_json, file=file)
-
         for i in json_data['pageProps']['comments']:
             epi_comment = {key: value for key, value in i.items() if key in eid_names}
             epi_comment['text'] = emoji.demojize(str(i['text']))
@@ -133,25 +116,8 @@ def get_podcast_info(PID):
 
             epi_info_data.append(epi_comment)
 
-
-        # find specific statistic we want
-        #p1 = {key: value for key, value in json_data['pageProps']['episode']['podcast'].items() if key in podcast_name}
-        #data.append(p1)
-        
-        # p2 = {key: value for key, value in json_data['pageProps']['episode'].items() if key in field_names}
-        # pod_info_data.append(p2)
-
-    # print(pod_info_data)
-
     # convert to csv file
     import csv 
-
-    # # convert pod_info_data to csv
-    # info = ['pid','title', 'clapCount', 'commentCount', 'playCount', 'favoriteCount', 'pubDate', 'duration','eid']
-    # with open(finalpodname + '_data.csv', 'w' , newline='') as csvfile:
-    #     writer = csv.DictWriter(csvfile, fieldnames = info)
-    #     writer.writeheader()
-    #     writer.writerows(pod_info_data)
 
     # convert epi_info_data to csv
     info = ['pod_name','epi_name','id','level','text','isFriendly','Sentiment','likeCount','replyCount']
@@ -159,9 +125,6 @@ def get_podcast_info(PID):
         writer = csv.DictWriter(csvfile, fieldnames = info)
         writer.writeheader()
         writer.writerows(epi_info_data)
-
-
-# get_podcast_info('63995a333a2b7eba5ceb4658')
 
 if __name__ == "__main__":
 

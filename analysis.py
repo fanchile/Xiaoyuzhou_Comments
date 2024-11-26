@@ -64,10 +64,3 @@ print(f"Total number of texts with length greater than 250: {count_long_texts}")
 long_texts_details = data[data['textlen'] > 1000][['text', 'likeCount', 'replyCount']]
 print(long_texts_details)
 
-
-# # 显示textlen最长的十行的text值
-# top_texts = data.nlargest(50, 'textlen')['text']
-# print(top_texts)
-# # 以及他们的textlen值
-# top_texts_with_length = data.nlargest(50, 'textlen')[['text', 'textlen']]
-# print(top_texts_with_length)
